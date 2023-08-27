@@ -7,8 +7,11 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[ORM\Entity(repositoryClass: SurveyRepository::class)]
+#[UniqueEntity(['title', 'slug'])]
 class Survey
 {
     #[ORM\Id]
@@ -23,7 +26,7 @@ class Survey
     #[ORM\Column(length: 255)]
     private ?string $image = null;
 
-    #[ORM\Column(length: 1000)]
+    #[ORM\Column(length: 1000, unique: true)]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
@@ -41,10 +44,18 @@ class Survey
     #[ORM\OneToMany(mappedBy: 'survey', targetEntity: SurveyAnswer::class, orphanRemoval: true)]
     private Collection $surveyAnswers;
 
+    #[ORM\Column(length: 1000, unique: true)]
+    private ?string $slug = null;
+
     public function __construct()
     {
         $this->surveyQuestions = new ArrayCollection();
         $this->surveyAnswers = new ArrayCollection();
+    }
+
+    public function computeSlug(SluggerInterface $slugger): void
+    {
+        $this->slug = (string) $slugger->slug($this->title)->lower();
     }
 
     public function getId(): ?int
@@ -180,6 +191,18 @@ class Survey
                 $surveyAnswer->setSurvey(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): static
+    {
+        $this->slug = $slug;
 
         return $this;
     }
