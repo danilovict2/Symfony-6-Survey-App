@@ -10,7 +10,7 @@
                     <div class="hidden md:block">
                         <div class="ml-10 flex items-baseline space-x-4">
                             <a v-for="item in navigation" :key="item.name" :href="item.href"
-                                :class="[item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white', 'rounded-md px-3 py-2 text-sm font-medium']"
+                                :class="[item.href === props.route ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white', 'rounded-md px-3 py-2 text-sm font-medium']"
                                 :aria-current="item.current ? 'page' : undefined">{{ item.name }}</a>
                         </div>
                     </div>
@@ -105,6 +105,10 @@
 <script setup>
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue';
 
+const props = defineProps({
+    route: String
+});
+
 const user = {
     name: 'Tom Cook',
     email: 'tom@example.com',
@@ -113,7 +117,7 @@ const user = {
 };
 
 const navigation = [
-    { name: 'Dashboard', href: '#', current: true },
-    { name: 'Survey', href: '#', current: false },
+    { name: 'Dashboard', href: '/' },
+    { name: 'Survey', href: '#' },
 ];
 </script>
