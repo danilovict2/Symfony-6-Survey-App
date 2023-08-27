@@ -1,3 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+input[type=email],
+input[type=password],
+textarea,
+input[type=text] {
+    text-indent: 0.75rem;
+}
