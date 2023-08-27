@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Register{% endblock %}
+{% block navbar %}{% endblock %}
+
+{% block body %}
+	{% if form_errors(registrationForm) %}
+		<div {{ vue_component('Alert', {error: form_errors(registrationForm)|trim('<ul><li></li></ul>')} ) }}></div>
+	{% endif %}
+
+	<div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
+		<div>
+			<img class="mx-auto h-12 w-auto" src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg" alt="Workflow"/>
+			<h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+				Register for free
+			</h2>
+			<p class="mt-2 text-center text-sm text-gray-600">
+				Or
+				{{ " " }}
+				<a href="{{ path('app_login') }}" class="font-medium text-indigo-600 hover:text-indigo-500">
+					login to your account
+				</a>
+			</p>
+		</div>
+
+		{{ form_start(registrationForm, { attr: { class: 'w-[400px] mx-auto p-6 my-16' } }) }}
+		<div class="mb-4">
+			{{ form_label(registrationForm.name, 'Your Name', { label_attr: { class: 'block text-sm font-medium leading-6 text-gray-900' } }) }}
+			{{ form_widget(registrationForm.name, { attr: { class: 'block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 indent-3' } }) }}
+		</div>
+		<div class="mb-4">
+			{{ form_label(registrationForm.email, 'Your Email', { label_attr: { class: 'block text-sm font-medium leading-6 text-gray-900' } }) }}
+			{{ form_widget(registrationForm.email, { attr: { class: 'block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 indent-3' } }) }}
+		</div>
+		<div class="mb-4">
+			{{ form_label(registrationForm.plainPassword, 'Password', { label_attr: { class: 'block text-sm font-medium leading-6 text-gray-900' } }) }}
+			{{ form_widget(registrationForm.plainPassword, { attr: { class: 'block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 indent-3' } }) }}
+		</div>
+		<button class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Register</button>
+		{{ form_end(registrationForm) }}
+	</div>
+{% endblock %}
