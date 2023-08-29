@@ -29,8 +29,8 @@ class Survey
     #[ORM\Column(length: 1000, unique: true)]
     private ?string $title = null;
 
-    #[ORM\Column(type: Types::SMALLINT)]
-    private ?int $status = null;
+    #[ORM\Column(options: ['default' => false])]
+    private ?bool $status = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
@@ -99,12 +99,12 @@ class Survey
         return $this;
     }
 
-    public function getStatus(): ?int
+    public function getStatus(): ?bool
     {
         return $this->status;
     }
 
-    public function setStatus(int $status): static
+    public function setStatus(bool $status): static
     {
         $this->status = $status;
 
