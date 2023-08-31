@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -42,7 +43,7 @@ class SurveyController extends AbstractController
         Request $request,
         ValidatorInterface $validator,
         #[Autowire('%photo_dir%')] string $photoDir
-    ): Response {
+    ): JsonResponse {
         $data = $this->formatData(array_merge($request->request->all(), $request->files->all()));
         $survey = $data['id'] ? $this->surveyRepository->find($data['id']) : new Survey();
         $currentSurveyImage = $survey->getImage();
@@ -50,7 +51,7 @@ class SurveyController extends AbstractController
 
         $errors = $validator->validate($survey);
         if ($errors->count() > 0) {
-            return new Response(json_encode(['error' => $errors[0]->getMessage()]), 400);
+            return $this->json(['error' => $errors[0]->getMessage()], 400);
         }
 
         if ($data['image'] !== $currentSurveyImage) {
@@ -63,7 +64,7 @@ class SurveyController extends AbstractController
         
         $this->entityManager->persist($survey);
         $this->entityManager->flush();
-        return new Response(json_encode(['id' => $survey->getId()]));
+        return $this->json(['id' => $survey->getId()]);
     }
 
     private function formatData(array $data): array
