@@ -92,7 +92,7 @@ class SurveyController extends AbstractController
             return new Response('Unauthorized action!', 403);
         }
 
-        return $this->render('survey/edit.html.twig', [
+        return $this->render('survey/show.html.twig', [
             'survey' => $survey
         ]);
     }
