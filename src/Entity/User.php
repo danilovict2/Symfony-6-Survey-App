@@ -51,6 +51,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->surveys = new ArrayCollection();
     }
 
+    public function toArray(): array
+    {
+        return [
+            'name' => $this->name,
+            'email' => $this->email  
+        ];
+    }
+
     public function getId(): ?int
     {
         return $this->id;

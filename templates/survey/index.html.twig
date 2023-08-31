@@ -1,0 +1,7 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Surveys{% endblock %}
+
+{% block body %}
+	<div {{ vue_component('Survey', {surveys: surveys}) }}></div>
+{% endblock %}

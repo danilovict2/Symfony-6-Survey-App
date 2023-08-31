@@ -9,9 +9,11 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SurveyRepository::class)]
-#[UniqueEntity(['title', 'slug'])]
+#[UniqueEntity('title', message: 'Survey with this title already exists!')]
+#[UniqueEntity('slug', message: 'Survey with this title already exists!')]
 class Survey
 {
     #[ORM\Id]
@@ -24,9 +26,12 @@ class Survey
     private ?User $createdBy = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Image is required!')]
     private ?string $image = null;
 
     #[ORM\Column(length: 1000, unique: true)]
+    #[Assert\NotBlank(message: 'Title is required!')]
+    #[Assert\Length(max: 1000, maxMessage: 'Title cannot be longer than {{ limit }} characters')]
     private ?string $title = null;
 
     #[ORM\Column(options: ['default' => false])]
@@ -38,10 +43,10 @@ class Survey
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $expireDate = null;
 
-    #[ORM\OneToMany(mappedBy: 'survey', targetEntity: SurveyQuestion::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'survey', targetEntity: SurveyQuestion::class, orphanRemoval: true, cascade: ['persist', 'remove'])]
     private Collection $surveyQuestions;
 
-    #[ORM\OneToMany(mappedBy: 'survey', targetEntity: SurveyAnswer::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'survey', targetEntity: SurveyAnswer::class, orphanRemoval: true, cascade: ['persist', 'remove'])]
     private Collection $surveyAnswers;
 
     #[ORM\Column(length: 1000, unique: true)]
@@ -56,6 +61,20 @@ class Survey
     public function computeSlug(SluggerInterface $slugger): void
     {
         $this->slug = (string) $slugger->slug($this->title)->lower();
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'image' => $this->image,
+            'title' => $this->title,
+            'slug' => $this->slug,
+            'status' => $this->status,
+            'description' => $this->description,
+            'expire_date' => $this->expireDate?->format('Y-m-d'),
+            'questions' => []
+        ];
     }
 
     public function getId(): ?int
