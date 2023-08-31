@@ -11,7 +11,7 @@
     <body class="h-full">
         {% set route = path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')) %}
         <div class="min-h-full">
-            {% if is_granted("ROLE_USER") %}<div {{ vue_component('Navbar', {route: route}) }}></div>{% endif %}
+            {% if is_granted("ROLE_USER") %}<div {{ vue_component('Navbar', {route: route, user: app.user.toArray()}) }}></div>{% endif %}
             {% block body %}{% endblock %}
         </div>
 
