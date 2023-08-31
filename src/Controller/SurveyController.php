@@ -61,7 +61,7 @@ class SurveyController extends AbstractController
             $image = $this->saveFileAndGetNewFilename($data['image'], $photoDir);
             $survey->setImage($image);
         }
-        
+
         $this->entityManager->persist($survey);
         $this->entityManager->flush();
         return $this->json(['id' => $survey->getId()]);

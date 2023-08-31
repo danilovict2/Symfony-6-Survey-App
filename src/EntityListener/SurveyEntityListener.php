@@ -17,6 +17,6 @@ class SurveyEntityListener
 
     public function preRemove(Survey $survey, LifecycleEventArgs $args)
     {
-        //unlink($this->photoDir . '/' . $survey->getImage()); 
+        //unlink($this->photoDir . '/' . $survey->getImage());
     }
 }

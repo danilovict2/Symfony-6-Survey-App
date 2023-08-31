@@ -55,7 +55,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return [
             'name' => $this->name,
-            'email' => $this->email  
+            'email' => $this->email
         ];
     }
 
