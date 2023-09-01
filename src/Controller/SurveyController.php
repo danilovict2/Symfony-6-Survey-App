@@ -17,7 +17,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-#[Route('/surveys')]
+#[Route('/survey')]
 #[IsGranted("ROLE_USER")]
 class SurveyController extends AbstractController
 {
@@ -25,7 +25,7 @@ class SurveyController extends AbstractController
     {
     }
 
-    #[Route('', name: 'surveys')]
+    #[Route('s', name: 'surveys')]
     public function index(): Response
     {
         $surveys = array_map(fn ($survey) => $survey->toArray(), $this->surveyRepository->findBy(['createdBy' => $this->getUser()], ['id' => 'DESC']));
@@ -71,7 +71,7 @@ class SurveyController extends AbstractController
             $survey->addSurveyQuestion($question);
             $question->setSurvey($survey);
         }
-        
+
         $this->entityManager->persist($survey);
         $this->entityManager->flush();
         return $this->json(['id' => $survey->getId()]);
