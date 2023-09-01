@@ -20,4 +20,16 @@ class SurveyQuestionRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, SurveyQuestion::class);
     }
+
+    public function createQuestion(object $data): SurveyQuestion
+    {
+        $question = new SurveyQuestion();
+        $question->setType($data->type)
+            ->setQuestion($data->question)
+            ->setDescription($data->description)
+            ->setData(json_encode($data->data))
+        ;
+
+        return $question;
+    }
 }

@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Survey;
+use App\Entity\SurveyQuestion;
+use App\Repository\SurveyQuestionRepository;
 use App\Repository\SurveyRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -42,16 +44,19 @@ class SurveyController extends AbstractController
     public function store(
         Request $request,
         ValidatorInterface $validator,
+        SurveyQuestionRepository $surveyQuestionRepository,
         #[Autowire('%photo_dir%')] string $photoDir
     ): JsonResponse {
         $data = $this->formatData(array_merge($request->request->all(), $request->files->all()));
         $survey = $data['id'] ? $this->surveyRepository->find($data['id']) : new Survey();
         $currentSurveyImage = $survey->getImage();
         $this->surveyRepository->fillSurveyWithData($survey, $data);
+        $questions = array_map(fn($questionData) => $surveyQuestionRepository->createQuestion($questionData), $data['questions']);
 
-        $errors = $validator->validate($survey);
-        if ($errors->count() > 0) {
-            return $this->json(['error' => $errors[0]->getMessage()], 400);
+        $possibleErrors = array_merge([$validator->validate($survey)], array_map(fn($question) => $validator->validate($question), $questions));
+        $errors = array_values(array_filter($possibleErrors, fn($possibleEntityErrors) => $possibleEntityErrors->count() > 0));
+        if (count($errors) > 0) {
+            return $this->json(['error' => $errors[0][0]->getMessage()], 400);
         }
 
         if ($data['image'] !== $currentSurveyImage) {
@@ -62,6 +67,11 @@ class SurveyController extends AbstractController
             $survey->setImage($image);
         }
 
+        foreach ($questions as $question) {
+            $survey->addSurveyQuestion($question);
+            $question->setSurvey($survey);
+        }
+        
         $this->entityManager->persist($survey);
         $this->entityManager->flush();
         return $this->json(['id' => $survey->getId()]);
@@ -75,6 +85,7 @@ class SurveyController extends AbstractController
         $data['image'] = $data['image'] === 'null' ? '' : $data['image'];
         $data['expire_date'] = $data['expire_date'] === 'null' ? null : new \DateTimeImmutable($data['expire_date']);
         $data['created_by'] = $this->getUser();
+        $data['questions'] = json_decode($data['questions']);
         return $data;
     }
 

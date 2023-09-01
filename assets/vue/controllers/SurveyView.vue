@@ -119,7 +119,7 @@
                     </div>
                     <div v-for="(question, index) in survey.questions" :key="question.id">
                         <QuestionEditor :question="question" :index="index" @change="questionChange"
-                            @addQuestion="addQuestion" @deleteQuestion="deleteQuestion" />
+                            @deleteQuestion="deleteQuestion" />
                     </div>
                 </div>
 
@@ -138,7 +138,9 @@
 import { reactive, ref } from 'vue';
 import { useToast, useVtEvents } from 'vue-toastify';
 import PageComponent from '../components/PageComponent.vue';
+import QuestionEditor from '../components/QuestionEditor.vue';
 import axios from 'axios';
+import { v4 as uuidv4 } from "uuid";
 
 const props = defineProps({
     survey: {
@@ -162,7 +164,7 @@ let imageUrl = ref(survey.image ? '/uploads/photos/' + survey.image : '');
 function saveSurvey() {
     let data = new FormData();
     for (const key in survey) {
-        data.append(key, survey[key]);
+        data.append(key, key === 'questions' ? JSON.stringify(survey[key]) : survey[key]);
     }
     axios.post('/surveys/store', data, {
         headers: {
@@ -208,5 +210,37 @@ function deleteSurvey() {
                 });
             });
     }
+}
+
+function addQuestion() {
+    const newQuestion = {
+        id: uuidv4(),
+        type: "text",
+        question: "",
+        description: null,
+        data: {
+            options: []
+        },
+    };
+
+    survey.questions.push(newQuestion);
+}
+
+function deleteQuestion(question) {
+    survey.questions = survey.questions.filter((q) => q !== question);
+}
+
+function questionChange(question) {
+    // Important to explicitelly assign question.data.options, because otherwise it is a Proxy object
+    // and it is lost in JSON.stringify()
+    if (question.data.options) {
+        question.data.options = [...question.data.options];
+    }
+    survey.questions = survey.questions.map((q) => {
+        if (q.id === question.id) {
+            return JSON.parse(JSON.stringify(question));
+        }
+        return q;
+    });
 }
 </script>
