@@ -104,6 +104,7 @@
   
 <script setup>
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue';
+import { MenuIcon, XIcon } from "@heroicons/vue/outline";
 
 const props = defineProps({
     route: String,
