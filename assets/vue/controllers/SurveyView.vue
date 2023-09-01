@@ -141,6 +141,7 @@ import PageComponent from '../components/PageComponent.vue';
 import QuestionEditor from '../components/QuestionEditor.vue';
 import axios from 'axios';
 import { v4 as uuidv4 } from "uuid";
+import useSurvey from '../composables/survey';
 
 const props = defineProps({
     survey: {
@@ -196,20 +197,8 @@ function onImageChoose(e) {
     reader.readAsDataURL(survey.image);
 }
 
-function deleteSurvey() {
-    if (
-        confirm(
-            `Are you sure you want to delete this survey? Operation can't be undone!!`
-        )
-    ) {
-        axios.post('/surveys/delete/' + survey.id)
-            .then(() => {
-                useToast().notify({ body: `The survey was successfully deleted`, type: "success" });
-                useVtEvents().once('vtDismissed', () => {
-                    window.location = `/surveys`;
-                });
-            });
-    }
+function deleteSurvey(survey) {
+    useSurvey().deleteSurvey(survey);
 }
 
 function addQuestion() {
