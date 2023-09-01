@@ -167,7 +167,7 @@ function saveSurvey() {
     for (const key in survey) {
         data.append(key, key === 'questions' ? JSON.stringify(survey[key]) : survey[key]);
     }
-    axios.post('/surveys/store', data, {
+    axios.post('/survey/store', data, {
         headers: {
             "Content-Type": "multipart/form-data",
         },
@@ -176,7 +176,7 @@ function saveSurvey() {
             let action = survey.id ? 'updated' : 'created';
             useToast().notify({ body: `The survey was successfully ${action}`, type: "success" })
             useVtEvents().once('vtDismissed', () => {
-                window.location = `/surveys/${response.data.id}`;
+                window.location = `/survey/${response.data.id}`;
             });
         })
         .catch(e => {
