@@ -117,6 +117,11 @@ class SurveyController extends AbstractController
     public function showForGuest(string $slug): Response
     {
         $survey = $this->surveyRepository->findOneBySlug($slug);
+        $today = new \DateTimeImmutable();
+        if (!is_null($survey->getExpireDate()) && $survey->getExpireDate() < $today || !$survey->isActive()) {
+            return new Response('', 404);
+        }
+
         return $this->render('survey/guest-show.html.twig', [
             'survey' => $survey
         ]);

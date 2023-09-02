@@ -27,10 +27,6 @@ class SurveyAnswerController extends AbstractController
     ): JsonResponse {
         // Casted to array for convenience
         $answers = (array)json_decode($request->request->getString('answers'));
-        
-        if (empty($answers)) {
-            return $this->json(['error' => 'Please provide an answer'], 400);
-        }
 
         $surveyAnswer = new SurveyAnswer();
         $surveyAnswer->setSurvey($survey)

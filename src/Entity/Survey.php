@@ -124,7 +124,7 @@ class Survey
         return $this;
     }
 
-    public function getStatus(): ?bool
+    public function isActive(): ?bool
     {
         return $this->status;
     }
