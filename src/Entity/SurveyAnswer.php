@@ -23,6 +23,15 @@ class SurveyAnswer
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $endDate = null;
 
+    public function toArray(): array
+    {
+        return [
+            'survey' => $this->survey->toArray(),
+            'start_date' => $this->startDate?->format('Y-m-d'),
+            'end_date' => $this->endDate?->format('Y-m-d')
+        ];
+    }
+
     public function getId(): ?int
     {
         return $this->id;

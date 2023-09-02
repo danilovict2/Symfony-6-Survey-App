@@ -77,7 +77,9 @@ class Survey
             'status' => $this->status,
             'description' => $this->description,
             'expire_date' => $this->expireDate?->format('Y-m-d'),
-            'questions' => array_map(fn($question) => $question->toArray(), $this->surveyQuestions->toArray())
+            'questions' => array_map(fn($question) => $question->toArray(), $this->surveyQuestions->toArray()),
+            'answers' => count($this->surveyAnswers->toArray()),
+            'created_at' => $this->createdAt->format('Y-m-d')
         ];
     }
 
