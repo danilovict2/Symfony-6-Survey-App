@@ -40,14 +40,6 @@ class SurveyQuestion
     #[ORM\JoinColumn(nullable: false)]
     private ?Survey $survey = null;
 
-    #[ORM\ManyToMany(targetEntity: SurveyAnswer::class)]
-    private Collection $answers;
-
-    public function __construct()
-    {
-        $this->answers = new ArrayCollection();
-    }
-
     public function toArray(): array
     {
         return [
@@ -123,27 +115,4 @@ class SurveyQuestion
         return $this;
     }
 
-    /**
-     * @return Collection<int, SurveyAnswer>
-     */
-    public function getanswers(): Collection
-    {
-        return $this->answers;
-    }
-
-    public function addReanswer(SurveyAnswer $reanswer): static
-    {
-        if (!$this->answers->contains($reanswer)) {
-            $this->answers->add($reanswer);
-        }
-
-        return $this;
-    }
-
-    public function removeReanswer(SurveyAnswer $reanswer): static
-    {
-        $this->answers->removeElement($reanswer);
-
-        return $this;
-    }
 }
