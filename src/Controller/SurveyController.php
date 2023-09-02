@@ -28,7 +28,7 @@ class SurveyController extends AbstractController
     #[Route('s', name: 'surveys')]
     public function index(): Response
     {
-        $surveys = array_map(fn ($survey) => $survey->toArray(), $this->surveyRepository->findBy(['createdBy' => $this->getUser()], ['id' => 'DESC']));
+        $surveys = array_map(fn ($survey) => $survey->toArray(), $this->surveyRepository->findBy(['createdBy' => $this->getUser()], ['createdAt' => 'DESC']));
         return $this->render('survey/index.html.twig', [
             'surveys' => $surveys
         ]);
