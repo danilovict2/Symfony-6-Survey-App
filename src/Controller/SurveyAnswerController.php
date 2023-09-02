@@ -34,7 +34,7 @@ class SurveyAnswerController extends AbstractController
 
         $surveyAnswer = new SurveyAnswer();
         $surveyAnswer->setSurvey($survey)
-            ->setStartDate(new \DateTimeImmutable(date('Y-m-d H:i:s')))
+            ->setStartDate(new \DateTimeImmutable())
             ->setEndDate($survey->getExpireDate())
         ;
 
