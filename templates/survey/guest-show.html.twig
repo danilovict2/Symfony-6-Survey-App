@@ -1,0 +1,7 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Survey {{ survey.title }}{% endblock %}
+
+{% block body %}
+    <div {{ vue_component('SurveyPublicView', {survey: survey.toArray()}) }}></div>
+{% endblock %}

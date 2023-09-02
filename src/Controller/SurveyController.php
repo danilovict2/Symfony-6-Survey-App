@@ -113,6 +113,15 @@ class SurveyController extends AbstractController
         ]);
     }
 
+    #[Route('/view/{slug}', name: 'survey_guest_show')]
+    public function showForGuest(string $slug): Response
+    {
+        $survey = $this->surveyRepository->findOneBySlug($slug);
+        return $this->render('survey/guest-show.html.twig', [
+            'survey' => $survey
+        ]);
+    }
+
     #[Route('/delete/{survey}', name: 'survey_delete', methods: ["POST"])]
     public function delete(Survey $survey): Response
     {

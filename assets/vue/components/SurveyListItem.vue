@@ -16,7 +16,7 @@
                 Edit
             </a>
             <div class="flex items-center">
-                <a :href="`/view/survey/${survey.slug}`" target="_blank"
+                <a :href="`/survey/view/${survey.slug}`" target="_blank"
                     class="h-8 w-8 flex items-center justify-center rounded-full border border-transparent text-sm text-indigo-500 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor">

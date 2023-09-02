@@ -2,7 +2,7 @@
     <PageComponent :title="survey.id ? survey.title : 'Create a Survey'">
         <template v-slot:header>
             <div class="flex">
-                <a :href="`#`" target="_blank" v-if="survey.slug"
+                <a :href="`/survey/view/${survey.slug}`" target="_blank" v-if="survey.slug"
                     class="flex py-2 px-4 border border-transparent text-sm rounded-md text-indigo-500 hover:bg-indigo-700 hover:text-white transition-colors focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 mr-2">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor">
