@@ -67,6 +67,10 @@ class SurveyController extends AbstractController
             $survey->setImage($image);
         }
 
+        $surveyQuestions = $survey->getSurveyQuestions();
+        foreach ($surveyQuestions as $question) {
+            $survey->removeSurveyQuestion($question);
+        }
         foreach ($questions as $question) {
             $survey->addSurveyQuestion($question);
             $question->setSurvey($survey);
