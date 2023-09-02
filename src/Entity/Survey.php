@@ -12,6 +12,7 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SurveyRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 #[UniqueEntity('title', message: 'Survey with this title already exists!')]
 #[UniqueEntity('slug', message: 'Survey with this title already exists!')]
 class Survey
@@ -51,6 +52,9 @@ class Survey
 
     #[ORM\Column(length: 1000, unique: true)]
     private ?string $slug = null;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $createdAt = null;
 
     public function __construct()
     {
@@ -224,5 +228,23 @@ class Survey
         $this->slug = $slug;
 
         return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    #[ORM\PrePersist]
+    public function setCreatedAtValue()
+    {
+        $this->createdAt = new \DateTimeImmutable();
     }
 }
