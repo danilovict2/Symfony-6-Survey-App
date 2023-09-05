@@ -28,14 +28,9 @@ class SurveyAnswerController extends AbstractController
         // Casted to array for convenience
         $answers = (array)json_decode($request->request->getString('answers'));
 
-        $surveyAnswer = new SurveyAnswer();
-        $surveyAnswer->setSurvey($survey)
-            ->setStartDate(new \DateTimeImmutable())
-            ->setEndDate($survey->getExpireDate())
-        ;
-
+        $surveyAnswer = $this->createSurveyAnswer($survey);
         $entityManager->persist($surveyAnswer);
-        
+
         foreach ($answers as $questionId => $fullAnswer) {
             $question = $surveyQuestionRepository->find($questionId);
             if (!$question) {
@@ -43,12 +38,7 @@ class SurveyAnswerController extends AbstractController
                 return $this->json(['error' => 'Invalid question ID: ' . $questionId], 400);
             }
 
-            $answer = new SurveyQuestionAnswer();
-            $answer->setQuestion($question)
-                ->setAnswer($surveyAnswer)
-                ->setFullAnswer(is_array($fullAnswer) ? json_encode($fullAnswer) : $fullAnswer)
-            ;
-
+            $answer = $this->createSurveyQuestionAnswer($question, $surveyAnswer, $fullAnswer);
             $errors = $validator->validate($answer);
             if ($errors->count() > 0) {
                 $entityManager->clear();
@@ -59,5 +49,26 @@ class SurveyAnswerController extends AbstractController
 
         $entityManager->flush();
         return new JsonResponse('', 202);
+    }
+
+    private function createSurveyAnswer(Survey $survey): SurveyAnswer
+    {
+        $surveyAnswer = new SurveyAnswer();
+        $surveyAnswer->setSurvey($survey)
+            ->setStartDate(new \DateTimeImmutable())
+            ->setEndDate($survey->getExpireDate());
+
+        return $surveyAnswer;
+    }
+
+    private function createSurveyQuestionAnswer(SurveyQuestion $question, SurveyAnswer $surveyAnswer, string|array $fullAnswer): SurveyQuestionAnswer
+    {
+        $answer = new SurveyQuestionAnswer();
+        $answer->setQuestion($question)
+            ->setAnswer($surveyAnswer)
+            ->setFullAnswer(is_array($fullAnswer) ? json_encode($fullAnswer) : $fullAnswer)
+        ;
+        
+        return $answer;
     }
 }
